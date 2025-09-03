@@ -1,0 +1,127 @@
+name: New Domain Feature
+description: Request a new domain-level feature in a domain-first style.
+title: "[Domain] <bounded context>: <capability>"
+labels:
+  - domain
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the feature in domain-first terms. Use the Ubiquitous Language of the bounded context and focus on the business capability before diving into implementation details.
+
+  - type: input
+    id: bounded-context
+    attributes:
+      label: Bounded Context
+      description: Which bounded context does this capability belong to?
+      placeholder: e.g. Billing
+    validations:
+      required: true
+
+  - type: input
+    id: domain-capability
+    attributes:
+      label: Domain Capability
+      description: Describe the capability using the Ubiquitous Language.
+      placeholder: e.g. Collect subscription payment
+    validations:
+      required: true
+
+  - type: textarea
+    id: business-motivation
+    attributes:
+      label: Business Motivation / Outcome
+      description: What business problem or outcome does this capability address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: domain-model-changes
+    attributes:
+      label: Domain Model Changes
+      description: List entities, value objects, aggregates, invariants, and domain services that change or are introduced.
+      placeholder: |
+        - Entities:
+        - Value Objects:
+        - Aggregates:
+        - Invariants:
+        - Domain Services:
+
+  - type: textarea
+    id: application-use-cases
+    attributes:
+      label: Application Use Cases
+      description: Commands, queries, and orchestration.
+      placeholder: |
+        - Commands:
+        - Queries:
+        - Orchestration:
+
+  - type: textarea
+    id: domain-events
+    attributes:
+      label: Domain Events
+      description: Events emitted or consumed in this capability.
+
+  - type: textarea
+    id: invariants-policies
+    attributes:
+      label: Invariants & Policies
+      description: Business rules, invariants, and policies that must hold.
+
+  - type: textarea
+    id: boundaries-integration
+    attributes:
+      label: Boundaries & Integration
+      description: Interactions with other bounded contexts, ACLs, contracts, and read models.
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Specify scenarios in Given/When/Then format.
+      placeholder: |
+        - Given ...
+          When ...
+          Then ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: non-functional
+    attributes:
+      label: Non-Functional Considerations
+      description: Performance, consistency, observability, security, idempotency, compatibility.
+
+  - type: textarea
+    id: breaking-change-migration
+    attributes:
+      label: Breaking Change & Migration Checklist
+      description: Note any breaking changes and required migration steps.
+      placeholder: |
+        - [ ] Step 1
+        - [ ] Step 2
+
+  - type: textarea
+    id: testing-strategy
+    attributes:
+      label: Testing Strategy
+      description: Unit, integration, end-to-end tests.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 (urgent)
+        - P1 (high)
+        - P2 (medium)
+        - P3 (low)
+      default: 2
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context / References
+      description: Links to related issues, designs, or discussions.

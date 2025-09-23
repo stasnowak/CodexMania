@@ -4,6 +4,7 @@ public sealed class TeamMember
 {
     private readonly List<AttendanceRecord> _activeRecords = new();
     private readonly List<AttendanceRecord> _archivedRecords = new();
+    private readonly HashSet<Guid> _recordedEventIds = new();
 
     public string MemberId { get; }
     public string Name { get; }
@@ -24,8 +25,7 @@ public sealed class TeamMember
         if (record.MemberId != MemberId)
             throw new InvalidOperationException($"Attendance record member {record.MemberId} does not match {MemberId}.");
 
-        if (_activeRecords.Any(r => r.EventId == record.EventId) ||
-            _archivedRecords.Any(r => r.EventId == record.EventId))
+        if (!_recordedEventIds.Add(record.EventId))
         {
             throw new InvalidOperationException($"Attendance for event {record.EventId} already recorded.");
         }

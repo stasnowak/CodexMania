@@ -133,4 +133,57 @@ public class TeamAttendanceAggregateTests
         var history = team.GetMemberAttendanceHistory("member-1", window);
         Assert.Equal(3, history.Count);
     }
+
+    [Fact]
+    public void TeamComplianceOverviewSummarizesCurrentState()
+    {
+        var team = new TeamAttendanceAggregate("team-42", "Platform");
+        team.RegisterMember("member-1", "Alice");
+        team.RegisterMember("member-2", "Bob");
+
+        var start = new DateOnly(2025, 4, 1);
+
+        for (var i = 0; i < 3; i++)
+        {
+            team.RecordMemberAttendance(
+                "member-1",
+                Guid.NewGuid(),
+                start.AddDays(i * 2),
+                AttendanceStatus.MandatoryMissed);
+        }
+
+        team.RecordMemberAttendance(
+            "member-2",
+            Guid.NewGuid(),
+            start,
+            AttendanceStatus.MandatoryAttended);
+
+        var asOf = start.AddDays(15);
+        team.RecalculateComplianceSummaries(asOf);
+
+        var overview = team.GetTeamComplianceOverview();
+
+        Assert.Equal(2, overview.TotalMembers);
+        Assert.Equal(2, overview.MembersWithSummary);
+        Assert.Equal(1, overview.CompliantMembers);
+        Assert.Equal(1, overview.NonCompliantMembers);
+        Assert.Equal(asOf, overview.LatestCalculationDate);
+        Assert.Equal(0.5, overview.ComplianceRate, 3);
+    }
+
+    [Fact]
+    public void TeamComplianceOverviewHandlesMissingSummaries()
+    {
+        var team = new TeamAttendanceAggregate("team-1", "Platform");
+        team.RegisterMember("member-1", "Alice");
+
+        var overview = team.GetTeamComplianceOverview();
+
+        Assert.Equal(1, overview.TotalMembers);
+        Assert.Equal(0, overview.MembersWithSummary);
+        Assert.Equal(0, overview.CompliantMembers);
+        Assert.Equal(0, overview.NonCompliantMembers);
+        Assert.Null(overview.LatestCalculationDate);
+        Assert.Equal(0, overview.ComplianceRate);
+    }
 }

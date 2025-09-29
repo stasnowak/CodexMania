@@ -80,4 +80,33 @@ public sealed class TeamAttendanceAggregate
         _domainEvents.Clear();
         return events;
     }
+
+    public TeamComplianceOverview GetTeamComplianceOverview()
+    {
+        var totalMembers = _members.Count;
+        var summaries = _members.Values
+            .Select(member => member.ComplianceSummary)
+            .Where(summary => summary is not null)
+            .Select(summary => summary!)
+            .ToList();
+
+        var membersWithSummary = summaries.Count;
+        var compliantMembers = summaries.Count(summary => summary.IsCompliant);
+        var nonCompliantMembers = summaries.Count(summary => !summary.IsCompliant);
+        var latestCalculationDate = summaries.Count == 0
+            ? (DateOnly?)null
+            : summaries.Max(summary => summary.CalculatedOn);
+
+        var complianceRate = membersWithSummary == 0
+            ? 0d
+            : (double)compliantMembers / membersWithSummary;
+
+        return new TeamComplianceOverview(
+            totalMembers,
+            membersWithSummary,
+            compliantMembers,
+            nonCompliantMembers,
+            complianceRate,
+            latestCalculationDate);
+    }
 }
